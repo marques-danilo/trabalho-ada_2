@@ -1,0 +1,6 @@
+# Perfil usado quando o servico roda dentro do docker-compose.
+spring:
+  datasource:
+    url: jdbc:h2:file:/app/data/order-processor-db;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+  rabbitmq:
+    host: rabbitmq

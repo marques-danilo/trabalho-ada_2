@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: checkout-service
+
+  jackson:
+    # O contrato de API e de mensageria usa snake_case (produto_id, cliente_cpf, ...).
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+  # Base de dados propria do dominio de Checkout, segregada do Order Processor.
+  datasource:
+    url: jdbc:h2:file:${CHECKOUT_DB_PATH:./data/checkout-db};DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2s
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASS:guest}
+    listener:
+      simple:
+        # A compensacao e idempotente, mas evitamos reentrega infinita em caso de erro.
+        default-requeue-rejected: false
+        concurrency: 2
+        max-concurrency: 8
+
+server:
+  port: ${CHECKOUT_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+checkout:
+  cache-ttl: 5m
+  query-attempts: 3
+  query-retry-delay: 200ms
+  reset-stock-on-startup: ${CHECKOUT_RESET_STOCK:false}
+  initial-stock:
+    PROD-001: 10
+    PROD-002: 50
+    PROD-FAIL: 25
+
+logging:
+  level:
+    com.marketplace.checkout: INFO

@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: order-processor-service
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+  # Base de dados propria do Order Processor, independente da base do Checkout.
+  datasource:
+    url: jdbc:h2:file:${PROCESSOR_DB_PATH:./data/order-processor-db};DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASS:guest}
+    listener:
+      simple:
+        default-requeue-rejected: false
+        concurrency: 2
+        max-concurrency: 8
+
+server:
+  port: ${PROCESSOR_PORT:8082}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+processor:
+  # Atraso artificial opcional, para que o status PROCESSING seja visivel na demonstracao.
+  processing-delay: 0ms
+  failure:
+    enabled: true
+    # Falha deterministica: qualquer pedido de PROD-FAIL cai no fluxo de compensacao.
+    product-ids:
+      - PROD-FAIL
+    # Taxa de falha aleatoria (0.0 a 1.0); ajustavel em runtime via POST /internal/failure-mode.
+    rate: 0.0
+    # Falha quando a quantidade excede este valor; 0 desliga o gatilho.
+    quantity-above: 0
+
+logging:
+  level:
+    com.marketplace.orderprocessor: INFO

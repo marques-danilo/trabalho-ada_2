@@ -1,0 +1,34 @@
+# Perfil de teste: RabbitMQ e substituido por um publisher em memoria e o H2 roda em memoria,
+# de modo que a suite nao depende de nenhuma infraestrutura externa.
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+  datasource:
+    url: jdbc:h2:mem:order-processor-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  h2:
+    console:
+      enabled: false
+
+processor:
+  processing-delay: 0ms
+  failure:
+    enabled: true
+    product-ids:
+      - PROD-FAIL
+    rate: 0.0
+    quantity-above: 0
+
+logging:
+  level:
+    com.marketplace.orderprocessor: WARN
+    org.hibernate: WARN

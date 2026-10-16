@@ -1,0 +1,38 @@
+# Perfil de teste: nenhuma infraestrutura externa e necessaria.
+# Redis e RabbitMQ sao substituidos por adaptadores em memoria (pacote infrastructure.memory,
+# em src/test/java) e as auto-configuracoes correspondentes sao desligadas para que o contexto
+# nao tente abrir conexoes.
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+  datasource:
+    url: jdbc:h2:mem:checkout-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  h2:
+    console:
+      enabled: false
+
+checkout:
+  cache-ttl: 5m
+  query-attempts: 3
+  # Mantem a suite rapida sem perder a semantica das tres tentativas.
+  query-retry-delay: 10ms
+  reset-stock-on-startup: true
+  initial-stock:
+    PROD-001: 10
+
+logging:
+  level:
+    com.marketplace.checkout: WARN
+    org.hibernate: WARN

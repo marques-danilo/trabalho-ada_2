@@ -1,0 +1,24 @@
+target/
+build/
+
+# Bancos H2 gerados na execucao local (no compose eles ficam em volumes Docker)
+data/
+*.mv.db
+*.trace.db
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+nbproject/
+
+# SO
+.DS_Store
+Thumbs.db
+
+*.log

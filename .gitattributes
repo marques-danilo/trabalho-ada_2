@@ -1,0 +1,14 @@
+* text=auto eol=lf
+
+# Scripts shell e arquivos consumidos dentro de containers Linux precisam de LF,
+# caso contrario o interpretador falha com erros de '\r'.
+*.sh text eol=lf
+Dockerfile text eol=lf
+mvnw text eol=lf
+
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+*.jar binary
+*.png binary
+*.jpg binary

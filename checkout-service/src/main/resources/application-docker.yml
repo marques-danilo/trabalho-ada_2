@@ -1,0 +1,10 @@
+# Perfil usado quando o servico roda dentro do docker-compose: a infraestrutura e alcancada
+# pelos nomes de servico da rede do compose, e o H2 grava no volume montado em /app/data.
+spring:
+  datasource:
+    url: jdbc:h2:file:/app/data/checkout-db;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+  data:
+    redis:
+      host: redis
+  rabbitmq:
+    host: rabbitmq

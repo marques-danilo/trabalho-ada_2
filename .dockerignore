@@ -1,0 +1,10 @@
+.git
+.gitignore
+**/target
+data
+**/data
+*.md
+!README.md
+.idea
+.vscode
+scripts/*.log

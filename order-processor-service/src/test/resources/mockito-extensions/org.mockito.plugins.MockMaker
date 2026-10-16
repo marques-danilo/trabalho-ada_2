@@ -1,0 +1,7 @@
+# O mock maker padrao (inline) instala um agente Java fazendo self-attach na JVM em execucao,
+# o que falha em ambientes onde o processo nao pode se anexar a si mesmo (containers, algumas
+# configuracoes de CI e JDKs que restringem self-attach).
+#
+# Todos os dublês desta suite sao interfaces (as portas do dominio), entao o mock maker por
+# subclasse atende sem perda de funcionalidade e torna os testes portateis.
+mock-maker-subclass
